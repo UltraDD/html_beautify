@@ -135,12 +135,14 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
 
 .template-card{border-radius:12px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .2s,transform .2s;position:relative}
 .template-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
+.template-card::before{content:'';position:absolute;inset:0;background:rgba(180,180,180,.22);z-index:1;pointer-events:none;border-radius:12px;transition:background .2s}
+.template-card:hover::before{background:transparent}
 .template-card .card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
 .template-card .card-name{padding:8px 10px;font-size:13px;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.template-card .card-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.template-card .card-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;z-index:3}
 .template-card:hover .card-overlay{opacity:1}
 .card-overlay-btn{padding:6px 16px;border:1px solid rgba(255,255,255,.8);border-radius:6px;background:rgba(255,255,255,.15);color:#fff;font-size:13px;cursor:pointer;backdrop-filter:blur(4px)}
-.vip-badge{position:absolute;top:0;left:0}
+.vip-badge{position:absolute;top:0;left:0;z-index:2}
 .vip-badge svg{width:40px;height:24px}
 
 /* ========== Banner row (first in template grid) ========== */
@@ -301,6 +303,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
 .tpl-card-head .tpl-ai-badge svg{width:14px;height:14px}
 .tpl-card-head .tpl-card-title{font-size:17px;font-weight:700;color:#222}
 .tpl-card-head .tpl-card-sub{font-size:13px;color:#999;margin-left:auto}
+.tpl-page-type{display:inline-flex;align-items:center;padding:3px 10px;border-radius:6px;background:#e8f0fe;font-size:12px;color:rgb(21,101,192);font-weight:600;margin-left:12px}
 .tpl-card-body{display:flex;min-height:400px;max-height:520px}
 .tpl-thumb-list{width:148px;flex-shrink:0;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;border-right:1px solid rgba(0,0,0,.05);background:#fafafa}
 .tpl-thumb{cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid transparent;transition:border-color .15s,box-shadow .15s}
@@ -313,24 +316,24 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
 .tpl-main-wrap{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.12)}
 .tpl-main-wrap img{width:100%;height:100%;object-fit:cover;display:block}
 .tpl-overlay{position:absolute;inset:0;display:flex;flex-direction:column;pointer-events:none}
-.tpl-overlay-cover{padding:30% 8% 0 8%;display:flex;flex-direction:column;gap:6px}
-.tpl-overlay-cover .tpl-title{font-size:clamp(16px,2.2vw,28px);font-weight:700;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.5)}
-.tpl-overlay-cover .tpl-subtitle{font-size:clamp(10px,1.2vw,15px);color:rgba(255,255,255,.7);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.tpl-overlay-cover{padding:24% 8% 0 8%;display:flex;flex-direction:column;gap:6px}
+.tpl-overlay-cover .tpl-title{font-size:clamp(16px,2.2vw,28px);font-weight:700;color:rgb(21,101,192)}
+.tpl-overlay-cover .tpl-subtitle{font-size:clamp(10px,1.2vw,15px);color:rgba(21,101,192,.7)}
 .tpl-overlay-toc{padding:10% 8% 0 8%;display:flex;gap:10%}
-.tpl-overlay-toc .toc-left{font-size:clamp(18px,2.5vw,32px);font-weight:700;color:rgba(255,255,255,.92);writing-mode:vertical-lr;letter-spacing:.3em;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.tpl-overlay-toc .toc-left{font-size:clamp(18px,2.5vw,32px);font-weight:700;color:rgb(21,101,192);writing-mode:vertical-lr;letter-spacing:.3em}
 .tpl-overlay-toc .toc-right{display:flex;flex-direction:column;gap:clamp(6px,1.5vw,20px);padding-top:2%}
 .tpl-overlay-toc .toc-item{display:flex;align-items:baseline;gap:clamp(4px,.8vw,10px)}
-.tpl-overlay-toc .toc-num{font-size:clamp(12px,1.6vw,20px);font-weight:700;color:rgba(255,255,255,.92)}
-.tpl-overlay-toc .toc-text{font-size:clamp(9px,1vw,14px);color:rgba(255,255,255,.7)}
-.tpl-overlay-chapter{padding:35% 0 0 8%;display:flex;flex-direction:column;gap:4px}
-.tpl-overlay-chapter .tpl-chap-num{font-size:clamp(20px,3.5vw,44px);font-weight:700;color:#ffa94d;font-style:italic;text-shadow:0 2px 8px rgba(0,0,0,.5)}
-.tpl-overlay-chapter .tpl-chap-label{font-size:clamp(11px,1.4vw,16px);font-weight:600;color:rgba(255,255,255,.88);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.tpl-overlay-toc .toc-num{font-size:clamp(12px,1.6vw,20px);font-weight:700;color:rgb(21,101,192)}
+.tpl-overlay-toc .toc-text{font-size:clamp(9px,1vw,14px);color:rgba(21,101,192,.7)}
+.tpl-overlay-chapter{padding:38% 0 0 8%;display:flex;flex-direction:column;gap:4px}
+.tpl-overlay-chapter .tpl-chap-num{font-size:clamp(20px,3.5vw,44px);font-weight:700;color:rgb(21,101,192);font-style:italic}
+.tpl-overlay-chapter .tpl-chap-label{font-size:clamp(11px,1.4vw,16px);font-weight:600;color:rgb(21,101,192)}
 .tpl-overlay-content{padding:4% 0 0 4%;display:flex;flex-direction:column;gap:4px}
-.tpl-overlay-content .tpl-title{font-size:clamp(11px,1.5vw,18px);font-weight:700;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.5)}
-.tpl-overlay-content .tpl-subtitle{font-size:clamp(8px,.9vw,12px);color:rgba(255,255,255,.6);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.tpl-overlay-content .tpl-title{font-size:clamp(11px,1.5vw,18px);font-weight:700;color:rgb(21,101,192)}
+.tpl-overlay-content .tpl-subtitle{font-size:clamp(8px,.9vw,12px);color:rgba(21,101,192,.6)}
 .tpl-overlay-end{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px}
-.tpl-overlay-end .tpl-title{font-size:clamp(14px,2.4vw,28px);font-weight:700;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.5)}
-.tpl-overlay-end .tpl-subtitle{font-size:clamp(9px,1vw,13px);color:rgba(255,255,255,.65);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.tpl-overlay-end .tpl-title{font-size:clamp(14px,2.4vw,28px);font-weight:700;color:rgb(21,101,192)}
+.tpl-overlay-end .tpl-subtitle{font-size:clamp(9px,1vw,13px);color:rgba(21,101,192,.65)}
 </style>
 </head>
 <body>
@@ -341,7 +344,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
 <!-- Header -->
 <header class="header">
   <div class="header-left">
-    <img class="header-logo" src="https://aippt-frontend.wpscdn.cn/app/docer-app-lab/ai2ppt-new/assets/ai_logo_new-CSmVTQKI.svg" alt="WPS AIPPT">
+    <img class="header-logo" src="https://aippt-frontend.wpscdn.cn/app/docer-app-lab/ai2ppt-new/assets/ai_logo_new-CSmVTQKI.svg" alt="WPS AIPPT" onclick="goToHome()" style="cursor:pointer">
   </div>
   <div class="header-right">
     <button class="header-btn">
@@ -555,13 +558,13 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z" stroke="#7c5cfc" stroke-width="1.8" stroke-linejoin="round" fill="#7c5cfc" fill-opacity=".15"/></svg>
     </span>
     <span class="ot-label">AI 推荐模板</span>
-    <span class="ot-sub">根据内容为每页推荐的美化模板，实际效果以生成为准</span>
+    <span class="ot-sub">根据内容智能匹配，实际效果以生成为准</span>
   </div>
   <div class="tpl-card">
     <div class="tpl-card-inner">
       <div class="tpl-card-head">
         <span class="tpl-ai-badge"><svg viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5c.5 1.5 1.5 2.5 3 3-1.5.5-2.5 1.5-3 3-.5-1.5-1.5-2.5-3-3 1.5-.5 2.5-1.5 3-3z" stroke="#7c5cfc" stroke-linejoin="round" fill="#7c5cfc" fill-opacity=".2"/></svg>AI 推荐</span>
-        <span class="tpl-card-title">推荐模板</span>
+        <span id="tplPageType" class="tpl-page-type">封面页</span>
         <span class="tpl-card-sub">点击左侧缩略图切换预览</span>
       </div>
       <div class="tpl-card-body">
@@ -591,7 +594,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","P
   <!-- Top Bar -->
   <div class="wps-topbar">
     <div class="wps-topbar-left">
-      <button class="wps-back-btn" onclick="goToHome()">
+      <button class="wps-back-btn" onclick="goBackToOutline()">
         <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         返回
       </button>
@@ -1046,22 +1049,33 @@ function renderOutline() {
     var mainOverlay = document.getElementById('tplMainOverlay');
     thumbList.innerHTML = '';
 
+    var tplPreviewSlides = [];
+    var seenTypes = {};
+    slidesData.forEach(function(s) {
+      if (!seenTypes[s.type]) {
+        seenTypes[s.type] = true;
+        tplPreviewSlides.push(s);
+      }
+    });
+
     function selectTplSlide(idx) {
-      var s = slidesData[idx];
+      var s = tplPreviewSlides[idx];
       mainImg.src = s.bg;
       mainOverlay.innerHTML = buildTplOverlay(s);
       var thumbs = thumbList.querySelectorAll('.tpl-thumb');
       for (var i = 0; i < thumbs.length; i++) {
         thumbs[i].classList.toggle('active', i === idx);
       }
+      var typeEl = document.getElementById('tplPageType');
+      if (typeEl) typeEl.textContent = s.type;
     }
 
-    slidesData.forEach(function(s, i) {
+    tplPreviewSlides.forEach(function(s, i) {
       var thumb = document.createElement('div');
       thumb.className = 'tpl-thumb' + (i === 0 ? ' active' : '');
       thumb.innerHTML =
-        '<img src="' + s.bg + '" alt="第' + s.idx + '页">' +
-        '<div class="tpl-thumb-label">P' + s.idx + ' ' + s.type + '</div>';
+        '<img src="' + s.bg + '" alt="' + s.type + '">' +
+        '<div class="tpl-thumb-label">' + s.type + '</div>';
       thumb.onclick = function() { selectTplSlide(i); };
       thumbList.appendChild(thumb);
     });
@@ -1132,6 +1146,11 @@ function goToResult() {
 
 function goToHome() {
   showPage('home');
+}
+
+function goBackToOutline() {
+  renderOutline();
+  showPage('outline');
 }
 
 // ========== Result Page (WPS-style) ==========
