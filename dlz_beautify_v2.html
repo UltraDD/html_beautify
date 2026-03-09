@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>AIPPT - 用AI深度美化，创作精美PPT</title>
+<link rel="shortcut icon" type="image/x-icon" href="//aippt.wps.cn/favicon.ico">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#0d0d0d;background:#fff;-webkit-font-smoothing:antialiased}
+
+/* ========== Header ========== */
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;border-bottom:1px solid rgba(0,0,0,.06)}
+.header-left{display:flex;align-items:center;gap:8px}
+.header-logo{height:26px}
+.header-right{display:flex;align-items:center;gap:16px}
+.header-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-size:14px;color:#333;transition:background .2s}
+.header-btn:hover{background:rgba(0,0,0,.04)}
+.header-btn svg{flex-shrink:0}
+.header-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover}
+
+/* ========== Banner ========== */
+.guide-banner{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:44px;background:linear-gradient(90deg,#faf5ff,#f0e8ff);position:relative}
+.banner-left{display:flex;align-items:center;gap:8px}
+.banana-icon{height:28px}
+.banner-text{font-size:14px;color:#333}
+.banner-text b{color:#7c5cfc}
+.try-btn{padding:4px 16px;border:none;border-radius:16px;background:linear-gradient(135deg,#7c5cfc,#b06cfc);color:#fff;font-size:13px;cursor:pointer;transition:opacity .2s}
+.try-btn:hover{opacity:.85}
+.close-btn{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#a3a3a3;font-size:16px;line-height:1}
+
+/* ========== Main ========== */
+.main{display:flex;flex-direction:column;align-items:center;padding:40px 24px 0;min-height:calc(100vh - 100px);background:linear-gradient(180deg,#faf8ff 0%,#fff 300px)}
+.slogan{font-size:28px;font-weight:700;text-align:center;margin-bottom:24px;line-height:1.4}
+.slogan .ai-text{background:linear-gradient(135deg,#7c5cfc,#b06cfc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ========== Tab Switch ========== */
+.tab-bar{display:flex;gap:0;margin-bottom:20px;position:relative}
+.tab-btn{display:flex;align-items:center;gap:6px;padding:8px 20px;border:none;background:transparent;font-size:15px;color:#666;cursor:pointer;position:relative;transition:color .2s;border-radius:8px}
+.tab-btn:hover{color:#333}
+.tab-btn.active{color:#7c5cfc;font-weight:600}
+.tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:60%;height:2.5px;background:linear-gradient(90deg,#7c5cfc,#b06cfc);border-radius:2px}
+.tab-btn svg{width:16px;height:16px}
+.tab-divider{width:1px;height:20px;background:rgba(0,0,0,.1);align-self:center;margin:0 4px}
+
+/* ========== Content Panels ========== */
+.tab-content{display:none;width:100%;max-width:680px}
+.tab-content.active{display:block}
+
+/* ========== Input Box (original tabs placeholder) ========== */
+.original-content{text-align:center;padding:60px 0;color:#999;font-size:14px}
+
+/* ========== Beautify Upload Box ========== */
+.beautify-box{width:100%;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:visible;position:relative}
+.upload-area{padding:28px 24px;text-align:center;position:relative;transition:background .2s}
+.upload-area.drag-over{background:#f5f0ff}
+.upload-empty{display:flex;flex-direction:column;align-items:center;gap:12px}
+.upload-title{font-size:15px;color:#333;font-weight:500}
+.upload-desc{font-size:13px;color:#999}
+.upload-buttons{display:flex;gap:12px;margin-top:8px}
+.upload-btn{display:flex;align-items:center;gap:6px;padding:8px 20px;border:1px solid rgba(0,0,0,.12);border-radius:8px;background:#fff;font-size:14px;color:#333;cursor:pointer;transition:all .2s}
+.upload-btn:hover{background:#f8f6ff;border-color:#c5b3ff}
+.upload-btn svg{width:16px;height:16px;flex-shrink:0}
+.upload-input{display:none}
+
+/* uploaded file state */
+.upload-file{display:none;align-items:center;gap:12px;padding:4px 0}
+.upload-file.visible{display:flex}
+.file-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#fff3e0;border-radius:6px;flex-shrink:0}
+.file-icon svg{width:20px;height:20px}
+.file-name{font-size:14px;color:#333;flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-delete{background:none;border:none;cursor:pointer;padding:4px;color:#999;display:flex;align-items:center;transition:color .2s}
+.file-delete:hover{color:#e53935}
+.file-delete svg{width:16px;height:16px}
+
+/* ========== Bottom Actions ========== */
+.bottom-actions{display:flex;align-items:center;padding:10px 16px;border-top:1px solid rgba(0,0,0,.06);gap:4px;flex-wrap:wrap}
+.action-left{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+.action-spacer{flex:1}
+
+/* dropdown trigger */
+.dropdown-wrap{position:relative}
+.dropdown-trigger{display:flex;align-items:center;gap:4px;padding:6px 12px;border:none;background:transparent;border-radius:6px;font-size:13px;color:#555;cursor:pointer;transition:background .2s;white-space:nowrap}
+.dropdown-trigger:hover{background:rgba(0,0,0,.04)}
+.dropdown-trigger svg{width:14px;height:14px;flex-shrink:0}
+.dropdown-trigger .arrow{transition:transform .2s}
+.dropdown-trigger.open .arrow{transform:rotate(180deg)}
+
+/* dropdown panel — opens downward, options side by side */
+.dropdown-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.12);padding:8px;z-index:100;display:none;animation:dropdownIn .15s ease}
+.dropdown-panel.show{display:flex;gap:8px}
+.dropdown-panel.vertical.show{display:flex;flex-direction:column}
+@keyframes dropdownIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.dropdown-option{display:flex;gap:10px;padding:14px;border-radius:10px;cursor:pointer;transition:background .15s;align-items:flex-start;flex:1;min-width:200px;border:1.5px solid transparent}
+.dropdown-option:hover{background:#f8f8f8}
+.dropdown-option.selected{background:#f0f5ff;border-color:#d6e4ff}
+.option-icon{width:32px;height:32px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.option-icon svg{width:18px;height:18px}
+.option-content{flex:1;min-width:0}
+.option-title-row{display:flex;align-items:center;gap:6px}
+.option-title{font-size:14px;font-weight:600;color:#333}
+.option-check{width:16px;height:16px;color:#1a6cff;flex-shrink:0;display:none}
+.dropdown-option.selected .option-check{display:block}
+.option-desc{font-size:12px;color:#999;margin-top:4px;line-height:1.6}
+.wip-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;color:#f59e0b;background:#fef3c7;border:1px solid #fde68a;margin-left:6px;vertical-align:middle;line-height:1.5}
+
+/* beautify bg toggle */
+.bg-toggle{display:flex;align-items:center;gap:4px;padding:6px 12px;border:none;border-radius:6px;font-size:13px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.bg-toggle.active{background:#e8f0fe;color:#1a6cff}
+.bg-toggle:not(.active){background:transparent;color:#555}
+.bg-toggle:hover:not(.active){background:rgba(0,0,0,.04)}
+.bg-toggle svg{width:14px;height:14px;flex-shrink:0}
+
+/* generate button */
+.generate-btn{display:flex;align-items:center;gap:6px;padding:8px 24px;border:none;border-radius:8px;background:linear-gradient(135deg,#7c5cfc,#b06cfc);color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s;white-space:nowrap;flex-shrink:0}
+.generate-btn:hover{opacity:.9}
+.generate-btn:disabled{opacity:.5;cursor:not-allowed}
+.generate-btn svg{width:16px;height:16px}
+
+/* ========== Template Section ========== */
+.template-section{width:100%;max-width:1200px;margin:32px auto 0;padding:0 24px 48px}
+.template-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.template-notice{font-size:13px;color:#999;display:flex;align-items:center;gap:4px}
+.template-notice::before{content:'「';color:#bbb}
+.template-notice::after{content:'」';color:#bbb}
+.upload-tpl-link{font-size:13px;color:#666;display:flex;align-items:center;gap:4px;cursor:pointer;text-decoration:none;transition:color .2s}
+.upload-tpl-link:hover{color:#7c5cfc}
+.upload-tpl-link svg{width:14px;height:14px}
+
+/* template grid */
+.template-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+@media(max-width:1100px){.template-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:860px){.template-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.template-grid{grid-template-columns:repeat(2,1fr)}}
+
+.template-card{border-radius:12px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .2s,transform .2s;position:relative}
+.template-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
+.template-card .card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.template-card .card-name{padding:8px 10px;font-size:13px;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.template-card .card-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.template-card:hover .card-overlay{opacity:1}
+.card-overlay-btn{padding:6px 16px;border:1px solid rgba(255,255,255,.8);border-radius:6px;background:rgba(255,255,255,.15);color:#fff;font-size:13px;cursor:pointer;backdrop-filter:blur(4px)}
+.vip-badge{position:absolute;top:0;left:0}
+.vip-badge svg{width:40px;height:24px}
+
+/* ========== Banner row (first in template grid) ========== */
+.banner-card{grid-column:1/3;border-radius:12px;overflow:hidden;position:relative;cursor:pointer}
+.banner-card img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ========== Outline Page ========== */
+.outline-page{display:none;min-height:calc(100vh - 56px);background:#f7f8fa;padding:0 0 100px}
+.outline-page.visible{display:block}
+
+/* -- Section titles -- */
+.outline-section-hd{max-width:1100px;margin:0 auto;padding:28px 24px 16px;display:flex;align-items:center;gap:10px}
+.outline-section-hd .ot-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.outline-section-hd .ot-icon.purple{background:#f0ebff}
+.outline-section-hd .ot-icon.blue{background:#e8f0fe}
+.outline-section-hd svg{width:20px;height:20px}
+.outline-section-hd .ot-label{font-size:17px;font-weight:700;color:#222}
+.outline-section-hd .ot-sub{font-size:13px;color:#999;margin-left:4px}
+
+/* -- Zone 1: Content verification cards -- */
+.outline-body{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:24px}
+
+.slide-card{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,.06);box-shadow:0 1px 8px rgba(0,0,0,.04);overflow:hidden}
+.slide-card-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid rgba(0,0,0,.05);background:#fafafa}
+.slide-type-badge{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7c5cfc,#b06cfc);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slide-type-name{font-size:15px;font-weight:700;color:#333}
+
+.slide-card-body{display:flex;gap:0}
+.slide-original{flex:1;min-width:0;padding:16px;display:flex;align-items:flex-start;justify-content:center;background:#fafafa;border-right:1px solid rgba(0,0,0,.05)}
+.slide-original img{width:100%;max-width:480px;border-radius:6px;border:1px solid rgba(0,0,0,.1);display:block;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.slide-extract{flex:1;min-width:0;padding:20px 24px}
+
+.slide-field{margin-bottom:8px;font-size:13.5px;color:#555;line-height:1.75}
+.slide-field b{color:#333;font-weight:600}
+.slide-field ul{margin:6px 0 0 18px;padding:0}
+.slide-field ul li{margin-bottom:3px}
+.slide-field li.content-group-head{font-weight:600;color:#333;margin-top:8px}
+.slide-field li.content-group-head ul{margin-top:4px}
+.slide-field li.content-group-head ul li{font-weight:400;color:#555}
+
+/* -- Editable outline items -- */
+.slide-field .editable-val{cursor:text;border-radius:4px;padding:1px 4px;margin:-1px -4px;transition:background .15s,box-shadow .15s;outline:none}
+.slide-field .editable-val:hover{background:rgba(124,92,252,.06)}
+.slide-field .editable-val:focus{background:#fff;box-shadow:0 0 0 2px rgba(124,92,252,.3)}
+
+.slide-field ul li{position:relative;padding:3px 4px 3px 0;border-radius:4px;transition:background .15s}
+.slide-field ul li[contenteditable]{cursor:text;outline:none}
+.slide-field ul li[contenteditable]:hover{background:rgba(124,92,252,.05)}
+.slide-field ul li[contenteditable]:focus{background:#fff;box-shadow:0 0 0 2px rgba(124,92,252,.25)}
+
+/* drag handle */
+.slide-field ul li[draggable="true"]{cursor:grab}
+.slide-field ul li[draggable="true"]::before{content:'⠿';position:absolute;left:-18px;top:50%;transform:translateY(-50%);color:#ccc;font-size:12px;opacity:0;transition:opacity .15s;cursor:grab}
+.slide-field ul li[draggable="true"]:hover::before{opacity:1}
+
+/* drag states */
+.slide-field ul li.dragging{opacity:.35}
+.slide-field ul li.drag-over-top{box-shadow:inset 0 2px 0 0 #7c5cfc}
+.slide-field ul li.drag-over-bottom{box-shadow:inset 0 -2px 0 0 #7c5cfc}
+
+.slide-assets{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;padding-top:16px;border-top:1px dashed rgba(0,0,0,.08)}
+.slide-asset{display:flex;flex-direction:column;align-items:center;gap:6px}
+.slide-asset img{height:52px;width:auto;max-width:180px;border-radius:6px;border:1px solid rgba(0,0,0,.08);object-fit:contain;background:#fafafa}
+.slide-asset-label{font-size:11px;color:#999;text-align:center}
+
+/* -- Zone 2: Background gallery -- */
+.outline-divider{max-width:1100px;margin:36px auto 0;padding:0 24px}
+.outline-divider hr{border:none;height:1px;background:linear-gradient(90deg,transparent,rgba(124,92,252,.25),transparent)}
+
+.bg-gallery{max-width:1100px;margin:0 auto;padding:0 24px}
+.bg-gallery-grid{display:flex;flex-direction:column;gap:20px}
+.bg-gallery-item{border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:#fff;box-shadow:0 1px 8px rgba(0,0,0,.04)}
+.bg-gallery-item img{width:100%;display:block}
+.bg-item-label{padding:10px 16px;font-size:13px;color:#666;font-weight:500;border-bottom:1px solid rgba(0,0,0,.05);background:#fafafa}
+
+/* -- Footer -- */
+.outline-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid rgba(0,0,0,.08);padding:16px 24px;display:flex;justify-content:center;z-index:200;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
+.outline-footer .confirm-btn{display:flex;align-items:center;gap:8px;padding:12px 48px;border:none;border-radius:10px;background:linear-gradient(135deg,#7c5cfc,#b06cfc);color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s}
+.outline-footer .confirm-btn:hover{opacity:.9}
+.outline-footer .confirm-btn:active{transform:scale(.98)}
+.outline-footer .confirm-btn svg{width:18px;height:18px}
+
+@media(max-width:860px){
+  .slide-card-body{flex-direction:column}
+  .slide-original{border-right:none;border-bottom:1px solid rgba(0,0,0,.05)}
+}
+
+/* ========== Result Page (WPS-style Editor) ========== */
+.result-page{display:none;position:fixed;inset:0;z-index:500;flex-direction:column;background:#f0f0f0}
+.result-page.visible{display:flex}
+
+/* -- WPS Top Bar -- */
+.wps-topbar{display:flex;align-items:center;height:36px;background:#fff;border-bottom:1px solid #e0e0e0;padding:0 12px;flex-shrink:0;gap:12px}
+.wps-topbar-left{display:flex;align-items:center;gap:8px}
+.wps-back-btn{display:flex;align-items:center;gap:4px;padding:4px 10px;border:none;background:transparent;border-radius:4px;font-size:12px;color:#666;cursor:pointer;transition:background .15s}
+.wps-back-btn:hover{background:#f0f0f0}
+.wps-back-btn svg{width:14px;height:14px}
+.wps-filename{font-size:13px;color:#333;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px}
+.wps-topbar-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+
+/* -- WPS Ribbon Tabs -- */
+.wps-ribbon{display:flex;flex-direction:column;flex-shrink:0;background:#fff;border-bottom:1px solid #d9d9d9}
+.wps-tabs{display:flex;gap:0;padding:0 12px;border-bottom:1px solid #e8e8e8}
+.wps-tab{padding:6px 16px;font-size:12.5px;color:#555;border:none;background:transparent;cursor:pointer;position:relative;transition:color .15s}
+.wps-tab:hover{color:#333}
+.wps-tab.active{color:#c0392b;font-weight:600}
+.wps-tab.active::after{content:'';position:absolute;bottom:-1px;left:4px;right:4px;height:2px;background:#c0392b;border-radius:1px}
+.wps-toolbar{height:36px;display:flex;align-items:center;gap:4px;padding:0 16px;overflow:hidden}
+.wps-tool-sep{width:1px;height:20px;background:#e0e0e0;margin:0 4px;flex-shrink:0}
+.wps-tool-btn{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border:none;background:transparent;border-radius:4px;cursor:default;color:#666}
+.wps-tool-btn svg{width:16px;height:16px}
+
+/* -- Editor Body -- */
+.wps-body{flex:1;display:flex;overflow:hidden}
+
+/* Left: Thumbnail Panel */
+.wps-panel-left{width:120px;background:#f7f7f7;border-right:1px solid #e0e0e0;overflow-y:auto;padding:8px 0;flex-shrink:0}
+.wps-thumb{position:relative;margin:0 8px 6px;cursor:pointer;border-radius:3px;overflow:hidden;border:2px solid transparent;transition:border-color .15s}
+.wps-thumb.active{border-color:#d35400}
+.wps-thumb:hover:not(.active){border-color:#bbb}
+.wps-thumb img{width:100%;display:block}
+.wps-thumb-num{position:absolute;bottom:2px;left:4px;font-size:9px;color:#999;background:rgba(255,255,255,.8);padding:0 3px;border-radius:2px;line-height:1.4}
+
+/* Center: Main Stage */
+.wps-stage{flex:1;display:flex;align-items:center;justify-content:center;background:#e8e8e8;position:relative;overflow:hidden;padding:24px}
+.wps-stage-inner{position:relative;max-width:calc(100% - 48px);max-height:100%}
+.wps-stage-inner img{max-width:100%;max-height:calc(100vh - 160px);display:block;box-shadow:0 2px 16px rgba(0,0,0,.18);background:#fff}
+
+/* Right: Tool Icons Panel */
+.wps-panel-right{width:36px;background:#fff;border-left:1px solid #e0e0e0;display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:4px;flex-shrink:0}
+.wps-rpanel-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:default;color:#888;font-size:10px;transition:background .15s}
+.wps-rpanel-icon:hover{background:#f0f0f0}
+.wps-rpanel-icon svg{width:16px;height:16px}
+.wps-rpanel-label{font-size:8px;color:#aaa;text-align:center;line-height:1;margin-top:-2px}
+
+/* -- Bottom Status Bar -- */
+.wps-statusbar{height:26px;background:#fff;border-top:1px solid #e0e0e0;display:flex;align-items:center;padding:0 12px;flex-shrink:0;gap:12px}
+.wps-status-item{font-size:11px;color:#888;display:flex;align-items:center;gap:4px}
+.wps-status-item svg{width:12px;height:12px}
+.wps-statusbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.wps-zoom-bar{display:flex;align-items:center;gap:4px}
+.wps-zoom-track{width:80px;height:3px;background:#ddd;border-radius:2px;position:relative}
+.wps-zoom-fill{height:100%;width:60%;background:#999;border-radius:2px}
+.wps-zoom-val{font-size:11px;color:#888}
+
+/* ========== Loading Overlay ========== */
+.loading-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(255,255,255,.85);flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px)}
+.loading-overlay.visible{display:flex}
+.loading-spinner{width:40px;height:40px;border:3px solid #e8e0ff;border-top-color:#7c5cfc;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:15px;color:#666}
+
+/* ========== Template Preview Card (Zone2 v2) ========== */
+.tpl-card{max-width:1100px;margin:0 auto;padding:0 24px}
+.tpl-card-inner{background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 16px rgba(0,0,0,.06);overflow:hidden}
+.tpl-card-head{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid rgba(0,0,0,.05)}
+.tpl-card-head .tpl-ai-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;background:linear-gradient(135deg,#f0ebff,#e8f0fe);font-size:12px;color:#7c5cfc;font-weight:600;flex-shrink:0}
+.tpl-card-head .tpl-ai-badge svg{width:14px;height:14px}
+.tpl-card-head .tpl-card-title{font-size:17px;font-weight:700;color:#222}
+.tpl-card-head .tpl-card-sub{font-size:13px;color:#999;margin-left:auto}
+.tpl-card-body{display:flex;min-height:400px;max-height:520px}
+.tpl-thumb-list{width:148px;flex-shrink:0;padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;border-right:1px solid rgba(0,0,0,.05);background:#fafafa}
+.tpl-thumb{cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid transparent;transition:border-color .15s,box-shadow .15s}
+.tpl-thumb:hover{border-color:rgba(0,0,0,.15)}
+.tpl-thumb.active{border-color:#7c5cfc;box-shadow:0 0 0 2px rgba(124,92,252,.2)}
+.tpl-thumb img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.tpl-thumb-label{padding:3px 6px;font-size:11px;color:#666;text-align:center;background:#f5f5f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpl-thumb.active .tpl-thumb-label{color:#7c5cfc;font-weight:600}
+.tpl-main-preview{flex:1;display:flex;align-items:center;justify-content:center;padding:16px;background:#f0f0f0;min-width:0}
+.tpl-main-wrap{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+.tpl-main-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.tpl-overlay{position:absolute;inset:0;display:flex;flex-direction:column;pointer-events:none}
+.tpl-overlay-cover{padding:30% 8% 0 8%;display:flex;flex-direction:column;gap:6px}
+.tpl-overlay-cover .tpl-title{font-size:clamp(16px,2.2vw,28px);font-weight:700;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.tpl-overlay-cover .tpl-subtitle{font-size:clamp(10px,1.2vw,15px);color:rgba(255,255,255,.7);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.tpl-overlay-toc{padding:10% 8% 0 8%;display:flex;gap:10%}
+.tpl-overlay-toc .toc-left{font-size:clamp(18px,2.5vw,32px);font-weight:700;color:rgba(255,255,255,.92);writing-mode:vertical-lr;letter-spacing:.3em;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.tpl-overlay-toc .toc-right{display:flex;flex-direction:column;gap:clamp(6px,1.5vw,20px);padding-top:2%}
+.tpl-overlay-toc .toc-item{display:flex;align-items:baseline;gap:clamp(4px,.8vw,10px)}
+.tpl-overlay-toc .toc-num{font-size:clamp(12px,1.6vw,20px);font-weight:700;color:rgba(255,255,255,.92)}
+.tpl-overlay-toc .toc-text{font-size:clamp(9px,1vw,14px);color:rgba(255,255,255,.7)}
+.tpl-overlay-chapter{padding:35% 0 0 8%;display:flex;flex-direction:column;gap:4px}
+.tpl-overlay-chapter .tpl-chap-num{font-size:clamp(20px,3.5vw,44px);font-weight:700;color:#ffa94d;font-style:italic;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.tpl-overlay-chapter .tpl-chap-label{font-size:clamp(11px,1.4vw,16px);font-weight:600;color:rgba(255,255,255,.88);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.tpl-overlay-content{padding:4% 0 0 4%;display:flex;flex-direction:column;gap:4px}
+.tpl-overlay-content .tpl-title{font-size:clamp(11px,1.5vw,18px);font-weight:700;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.tpl-overlay-content .tpl-subtitle{font-size:clamp(8px,.9vw,12px);color:rgba(255,255,255,.6);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.tpl-overlay-end{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px}
+.tpl-overlay-end .tpl-title{font-size:clamp(14px,2.4vw,28px);font-weight:700;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.tpl-overlay-end .tpl-subtitle{font-size:clamp(9px,1vw,13px);color:rgba(255,255,255,.65);text-shadow:0 1px 6px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+
+<!-- Guide Banner (hidden) -->
+<div class="guide-banner" id="guideBanner" style="display:none"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <img class="header-logo" src="https://aippt-frontend.wpscdn.cn/app/docer-app-lab/ai2ppt-new/assets/ai_logo_new-CSmVTQKI.svg" alt="WPS AIPPT">
+  </div>
+  <div class="header-right">
+    <button class="header-btn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 14.5H3a.5.5 0 01-.5-.5V2a.5.5 0 01.5-.5h6.793a.5.5 0 01.353.146l3.208 3.208a.5.5 0 01.146.353V7" stroke="#333" stroke-linejoin="round"/><path d="M9.5 1.5V5a.5.5 0 00.5.5h3.5" stroke="#333" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.146 7.854l-4.5 4.5A.5.5 0 006.5 12.707V14.49a.01.01 0 00.01.01h1.783a.5.5 0 00.353-.146l4.5-4.5a.5.5 0 000-.708l-1.293-1.293a.5.5 0 00-.707 0z" stroke="#2661BF" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 14.5h5" stroke="#2661BF" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      历史创作
+    </button>
+    <img class="header-avatar" src="https://img.qwps.cn/avatar/58a9faf21865ba38?imageMogr2/thumbnail/180x180!&k=1766714735371888102" alt="avatar">
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main">
+  <!-- Slogan -->
+  <div class="slogan" id="slogan">用 <span class="ai-text">AI 深度美化</span>，创作精美 PPT</div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab-btn" data-tab="topic" onclick="switchTab('topic')">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M7.5 7.15L9.49 3.02a.01.01 0 01.018 0L11.5 7.15l3.483 1.84a.01.01 0 010 .018L11.5 10.85l-1.99 4.13a.01.01 0 01-.018 0L7.5 10.85l-3.483-1.84a.01.01 0 010-.018L7.5 7.15z" stroke="#333" stroke-linejoin="round"/><path d="M2.59 2.73l.9-1.71a.01.01 0 01.018 0l.9 1.71 1.572.76a.01.01 0 010 .018l-1.572.76-.9 1.71a.01.01 0 01-.018 0l-.9-1.71-1.572-.76a.01.01 0 010-.018l1.572-.76z" stroke="#333" stroke-linejoin="round"/></svg>
+      输入主题
+    </button>
+    <button class="tab-btn" data-tab="upload" onclick="switchTab('upload')">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M9.793 1.5H3a.5.5 0 00-.5.5v12a.5.5 0 00.5.5h10a.5.5 0 00.5-.5V5.207a.5.5 0 00-.146-.353L10.146 1.646A.5.5 0 009.793 1.5z" stroke="#333" stroke-linejoin="round"/><path d="M9.5 1.5V5a.5.5 0 00.5.5h3.5" stroke="#333" stroke-linejoin="round"/><path d="M5.5 11.5h5" stroke="#333" stroke-linecap="round"/></svg>
+      上传文档
+    </button>
+    <button class="tab-btn" data-tab="outline" onclick="switchTab('outline')">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M12.5 2.5h2M12.5 7.5h2M12.5 12.5h2" stroke="#2661BF" stroke-linecap="round"/><path d="M1.5 2.5h8M1.5 7.5h5M1.5 12.5h8" stroke="#333" stroke-linecap="round"/></svg>
+      粘贴大纲
+    </button>
+    <div class="tab-divider"></div>
+    <button class="tab-btn active" data-tab="beautify" onclick="switchTab('beautify')">
+      <svg viewBox="0 0 16 16" fill="none"><path d="M2 13.5l3.5-3.5M8.5 3l-6 10.5" stroke="#7c5cfc" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2.5c.5 1.5 1.5 2.5 3 3-1.5.5-2.5 1.5-3 3-.5-1.5-1.5-2.5-3-3 1.5-.5 2.5-1.5 3-3z" fill="#7c5cfc" opacity=".2" stroke="#7c5cfc" stroke-linejoin="round"/><path d="M11.5 6c.3.9.9 1.5 1.8 1.8-.9.3-1.5.9-1.8 1.8-.3-.9-.9-1.5-1.8-1.8.9-.3 1.5-.9 1.8-1.8z" fill="#b06cfc" opacity=".3" stroke="#b06cfc" stroke-linejoin="round"/><path d="M13 11c.2.6.6 1 1.2 1.2-.6.2-1 .6-1.2 1.2-.2-.6-.6-1-1.2-1.2.6-.2 1-.6 1.2-1.2z" stroke="#b06cfc" stroke-linejoin="round"/></svg>
+      美化PPT
+    </button>
+  </div>
+
+  <!-- Tab Content: 输入主题 -->
+  <div class="tab-content" id="content-topic">
+    <div class="original-content">输入主题 — 请输入您想要生成的PPT主题</div>
+  </div>
+  <!-- Tab Content: 上传文档 -->
+  <div class="tab-content" id="content-upload">
+    <div class="original-content">上传文档 — 上传文件后自动生成PPT</div>
+  </div>
+  <!-- Tab Content: 粘贴大纲 -->
+  <div class="tab-content" id="content-outline">
+    <div class="original-content">粘贴大纲 — 粘贴您的文字大纲</div>
+  </div>
+
+  <!-- Tab Content: 美化PPT (main feature) -->
+  <div class="tab-content active" id="content-beautify">
+    <div class="beautify-box">
+      <!-- Upload Area -->
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-empty" id="uploadEmpty">
+          <div class="upload-title">拖拽文件到此处</div>
+          <div class="upload-desc">支持直接拖入包含PPT文件的文件夹</div>
+          <div class="upload-buttons">
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+              <svg viewBox="0 0 16 16" fill="none" stroke-width="1.2"><path d="M5.75 4.75h4.5" stroke="#333" stroke-linecap="round"/><path d="M6 14.25H4.25a1.5 1.5 0 01-1.5-1.5V3.25a1.5 1.5 0 011.5-1.5h7.5a1.5 1.5 0 011.5 1.5V6.5" stroke="#333"/><path d="M13.5 11a2.5 2.5 0 01.999 1.043 1.625 1.625 0 01-1.374 2.207H10a2.25 2.25 0 01-1.992-3.18A2.5 2.5 0 0113.5 11z" stroke="#333"/></svg>
+              云端文件
+            </button>
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+              <svg viewBox="0 0 16 16" fill="none" stroke-width="1.2"><path d="M11.25 14.25H4.75M12.75 11.25H3.25a1.5 1.5 0 01-1.5-1.5V3.25a1.5 1.5 0 011.5-1.5h9.5a1.5 1.5 0 011.5 1.5v6.5a1.5 1.5 0 01-1.5 1.5z" stroke="#333"/><path d="M8 11.25v3" stroke="#333" stroke-linecap="round"/></svg>
+              本地文件
+            </button>
+            <input type="file" id="fileInput" class="upload-input" accept=".ppt,.pptx,.pps,.ppsx,.pot,.potx">
+          </div>
+        </div>
+        <div class="upload-file" id="uploadFile">
+          <div class="file-icon">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="18" height="20" rx="2" fill="#FF7043" opacity=".15"/><path d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="#FF7043" stroke-width="1.5"/><text x="12" y="15" text-anchor="middle" fill="#FF7043" font-size="6" font-weight="bold">PPT</text></svg>
+          </div>
+          <span class="file-name" id="fileName"></span>
+          <button class="file-delete" id="fileDelete" title="删除">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div class="bottom-actions">
+        <div class="action-left">
+          <!-- Layout Mode Dropdown -->
+          <div class="dropdown-wrap" id="layoutDropdown">
+            <button class="dropdown-trigger" onclick="toggleDropdown('layoutDropdown')">
+              <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1" stroke="#555"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1" stroke="#555"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1" stroke="#555"/><rect x="9" y="9" width="5.5" height="5.5" rx="1" stroke="#555"/></svg>
+              <span class="trigger-text">智能布局模式</span>
+              <svg class="arrow" viewBox="0 0 16 16" fill="none"><path d="M4 6.5l4 3.5 4-3.5" stroke="#999" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown-panel" id="layoutPanel">
+              <div class="dropdown-option selected" data-value="smart" onclick="selectOption('layoutDropdown','smart','智能布局模式')">
+                <div class="option-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="8" height="8" rx="2" stroke="#333" stroke-width="1.5"/><rect x="14" y="2" width="8" height="8" rx="2" stroke="#333" stroke-width="1.5"/><rect x="2" y="14" width="8" height="8" rx="2" stroke="#333" stroke-width="1.5"/><rect x="14" y="14" width="8" height="8" rx="2" stroke="#333" stroke-width="1.5"/></svg>
+                </div>
+                <div class="option-content">
+                  <div class="option-title-row">
+                    <span class="option-title">智能布局模式</span>
+                    <svg class="option-check" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 4" stroke="#1a6cff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="option-desc">基于网页生成技术，适用于数据汇报场景，通过多维图表支撑结构化表达</div>
+                </div>
+              </div>
+              <div class="dropdown-option" data-value="creative" onclick="selectOption('layoutDropdown','creative','创意设计模式')">
+                <div class="option-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#333" stroke-width="1.5"/><path d="M12 7v5l3.5 3.5" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="option-content">
+                  <div class="option-title-row">
+                    <span class="option-title">创意设计模式</span><span class="wip-badge">二期建设</span>
+                    <svg class="option-check" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 4" stroke="#1a6cff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="option-desc">基于图片生成技术，适用于概念展示场景，通过信息架构图讲清复杂概念</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Beautify BG Toggle -->
+          <button class="bg-toggle active" id="bgToggle" onclick="toggleBg()">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M1.5 3A1.5 1.5 0 013 1.5h10A1.5 1.5 0 0114.5 3v10a1.5 1.5 0 01-1.5 1.5H3A1.5 1.5 0 011.5 13V3z" stroke="currentColor" stroke-width="1.1"/><path d="M10.15 8.85L4.5 14.5h9a.5.5 0 00.5-.5v-1.5l-3.15-3.15a.5.5 0 00-.7 0z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><circle cx="5.5" cy="6" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>
+            美化背景图
+          </button>
+
+          <!-- Preserve Original Dropdown -->
+          <div class="dropdown-wrap" id="preserveDropdown">
+            <button class="dropdown-trigger" onclick="toggleDropdown('preserveDropdown')">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 1.5h10a1.5 1.5 0 011.5 1.5v10a1.5 1.5 0 01-1.5 1.5H3A1.5 1.5 0 011.5 13V3A1.5 1.5 0 013 1.5z" stroke="#555" stroke-width="1.1"/><path d="M5 7.5h6M5 10h4" stroke="#555" stroke-width="1.1" stroke-linecap="round"/></svg>
+              <span class="trigger-text">保留原文</span>
+              <svg class="arrow" viewBox="0 0 16 16" fill="none"><path d="M4 6.5l4 3.5 4-3.5" stroke="#999" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="dropdown-panel vertical" id="preservePanel">
+              <div class="dropdown-option selected" data-value="preserve" onclick="selectOption('preserveDropdown','preserve','保留原文')">
+                <div class="option-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M4 3h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="#333" stroke-width="1.5"/><path d="M8 9h8M8 12h6M8 15h4" stroke="#333" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                <div class="option-content">
+                  <div class="option-title-row">
+                    <span class="option-title">保留原文</span>
+                    <svg class="option-check" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 4" stroke="#1a6cff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="option-desc">保留原文档的文字与素材，实现一字不改</div>
+                </div>
+              </div>
+              <div class="dropdown-option" data-value="polish" onclick="selectOption('preserveDropdown','polish','润色表达')">
+                <div class="option-icon">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z" stroke="#333" stroke-width="1.5"/><path d="M8 12h8M12 8v8" stroke="#333" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                <div class="option-content">
+                  <div class="option-title-row">
+                    <span class="option-title">润色表达</span><span class="wip-badge">二期建设</span>
+                    <svg class="option-check" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 4" stroke="#1a6cff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="option-desc">理解文档逻辑，润色语言，实现表达优化</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Generate Button -->
+        <button class="generate-btn" id="generateBtn" disabled>
+          立即生成
+          <svg viewBox="0 0 16 16" fill="none"><path d="M1 7.5h14M15 7.5l-4.75 5M15 7.5l-4.75-5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template Section -->
+  <div class="template-section" id="templateSection">
+    <div class="template-header">
+      <div class="template-notice"><span id="templateNotice">智能布局模式</span>不支持选择模板</div>
+      <a class="upload-tpl-link" href="javascript:void(0)">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        上传模板
+      </a>
+    </div>
+    <div class="template-grid" id="templateGrid">
+      <!-- Banner -->
+      <div class="banner-card">
+        <img src="https://tiance.wpscdn.cn/tiance-default/storage/official/file/2025/12/12/cb45720e42d6cb7d54a3db7362ed0f7b.png" alt="banner">
+      </div>
+      <!-- Template cards filled by JS -->
+    </div>
+  </div>
+</main>
+
+<!-- ==================== Outline Page ==================== -->
+<section class="outline-page" id="outlinePage">
+
+  <!-- Zone 1: Content Verification -->
+  <div class="outline-section-hd">
+    <span class="ot-icon purple">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h14" stroke="#7c5cfc" stroke-width="2" stroke-linecap="round"/></svg>
+    </span>
+    <span class="ot-label">内容校验</span>
+    <span class="ot-sub">请确认提取的文字与图片素材是否准确</span>
+  </div>
+  <div class="outline-body" id="outlineBody">
+    <!-- Slide cards rendered by JS -->
+  </div>
+
+  <!-- Divider -->
+  <div class="outline-divider" id="bgDivider"><hr></div>
+
+  <!-- Zone 2: AI 推荐模板 -->
+  <div id="bgZone">
+  <div class="outline-section-hd">
+    <span class="ot-icon blue">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z" stroke="#7c5cfc" stroke-width="1.8" stroke-linejoin="round" fill="#7c5cfc" fill-opacity=".15"/></svg>
+    </span>
+    <span class="ot-label">AI 推荐模板</span>
+    <span class="ot-sub">根据内容为每页推荐的美化模板，实际效果以生成为准</span>
+  </div>
+  <div class="tpl-card">
+    <div class="tpl-card-inner">
+      <div class="tpl-card-head">
+        <span class="tpl-ai-badge"><svg viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5c.5 1.5 1.5 2.5 3 3-1.5.5-2.5 1.5-3 3-.5-1.5-1.5-2.5-3-3 1.5-.5 2.5-1.5 3-3z" stroke="#7c5cfc" stroke-linejoin="round" fill="#7c5cfc" fill-opacity=".2"/></svg>AI 推荐</span>
+        <span class="tpl-card-title">推荐模板</span>
+        <span class="tpl-card-sub">点击左侧缩略图切换预览</span>
+      </div>
+      <div class="tpl-card-body">
+        <div class="tpl-thumb-list" id="tplThumbList"></div>
+        <div class="tpl-main-preview">
+          <div class="tpl-main-wrap" id="tplMainWrap">
+            <img id="tplMainImg" src="" alt="模板预览">
+            <div class="tpl-overlay" id="tplMainOverlay"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="outline-footer">
+    <button class="confirm-btn" id="confirmGenBtn" onclick="goToResult()">
+      确认生成
+      <svg viewBox="0 0 16 16" fill="none"><path d="M1 7.5h14M15 7.5l-4.75 5M15 7.5l-4.75-5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ==================== Result Page (WPS-style Editor) ==================== -->
+<section class="result-page" id="resultPage">
+  <!-- Top Bar -->
+  <div class="wps-topbar">
+    <div class="wps-topbar-left">
+      <button class="wps-back-btn" onclick="goToHome()">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        返回
+      </button>
+      <span class="wps-filename" id="wpsFilename">演示文稿 - 美化结果</span>
+    </div>
+    <div class="wps-topbar-right">
+      <svg width="60" height="20" viewBox="0 0 60 20"><text x="0" y="15" fill="#c0392b" font-size="13" font-weight="700" font-family="Arial">WPS</text><text x="32" y="15" fill="#888" font-size="10" font-family="Arial">AI</text></svg>
+    </div>
+  </div>
+
+  <!-- Ribbon -->
+  <div class="wps-ribbon">
+    <div class="wps-tabs">
+      <button class="wps-tab active">开始</button>
+      <button class="wps-tab">插入</button>
+      <button class="wps-tab">设计</button>
+      <button class="wps-tab">切换</button>
+      <button class="wps-tab">播放</button>
+      <button class="wps-tab">注释</button>
+    </div>
+    <div class="wps-toolbar">
+      <div class="wps-tool-btn"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h8" stroke="#666" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <div class="wps-tool-btn"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#666" stroke-width="1.2"/></svg></div>
+      <div class="wps-tool-sep"></div>
+      <div class="wps-tool-btn"><svg viewBox="0 0 16 16" fill="none"><path d="M3 13V3h2l3 4 3-4h2v10" stroke="#666" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="wps-tool-btn"><svg viewBox="0 0 16 16" fill="none"><path d="M4 12h8M6 8h4M5 4h6" stroke="#666" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <div class="wps-tool-sep"></div>
+      <div class="wps-tool-btn"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#666" stroke-width="1.2"/><path d="M8 5v3l2 2" stroke="#666" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="wps-tool-btn"><svg viewBox="0 0 16 16" fill="none"><path d="M2 11l4-4 3 3 5-6" stroke="#666" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+
+  <!-- Editor Body -->
+  <div class="wps-body">
+    <!-- Left Thumbnail Panel -->
+    <div class="wps-panel-left" id="wpsThumbs"></div>
+
+    <!-- Main Stage -->
+    <div class="wps-stage">
+      <div class="wps-stage-inner">
+        <img id="resultImg" src="" alt="slide">
+      </div>
+    </div>
+
+    <!-- Right Tool Panel -->
+    <div class="wps-panel-right">
+      <div class="wps-rpanel-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.1"/></svg></div>
+      <div class="wps-rpanel-label">模板</div>
+      <div class="wps-rpanel-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
+      <div class="wps-rpanel-label">幻灯</div>
+      <div class="wps-rpanel-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
+      <div class="wps-rpanel-label">动画</div>
+      <div class="wps-rpanel-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5c.5 1.5 1.5 2.5 3 3-1.5.5-2.5 1.5-3 3-.5-1.5-1.5-2.5-3-3 1.5-.5 2.5-1.5 3-3z" stroke="currentColor" stroke-width="1.1"/></svg></div>
+      <div class="wps-rpanel-label">设计</div>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="wps-statusbar">
+    <span class="wps-status-item" id="wpsSlideCount">幻灯片 1/6</span>
+    <div class="wps-statusbar-right">
+      <span class="wps-status-item">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3.5" width="13" height="9" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M5 3.5V2M11 3.5V2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+      </span>
+      <div class="wps-zoom-bar">
+        <span class="wps-zoom-val">110%</span>
+        <div class="wps-zoom-track"><div class="wps-zoom-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== Loading Overlay ==================== -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">正在解析PPT内容...</div>
+</div>
+
+<script>
+// ========== Template Data ==========
+var templates = [
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796633504/9d97bed04900b532425f5bdfe2e1b1da.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'小学生课题开题通用模板',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796643668/ff6bed73d1c92507d59a31e3c51a0be7.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'学校社团文化宣传活动',vip:false},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796650448/874832720e155045db88645b91ef709c.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'注意及企业教育培训模板',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796634947/cc73fb8c82292f47d7408a5a3ecd5856.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'城市行印年终工作报告模板',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796635627/8f00037582ef914de388f1e26f069f4c.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'中小学主题教育展示',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796650376/9922e3a33e98ad3753826cfb70519345.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'论文开题报告答辩模板',vip:false},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796631328/bae06a8d6159305fc7d0261c822bf11d.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'霓虹七夕毕业生自我简介及欣赏',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796643650/f32fa1e42b58cde5dc64fcdb201bd7da.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'应用与博士留学生准则认定',vip:false},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796637531/fd71e281fc6e72f1238d9d75a254d66e.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'互联网体育学模板',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796636001/051268be81153a74ae3f9d081c0b9aa4.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'中小学生心理健康教育',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796636018/e8e5b910bf308cc65207a9807a177215.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'幼儿园幼儿教程',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796627045/b86d943e42643e561d597930add23550.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'智能智慧共享经济新篇章',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796650403/2479ef4e3172aa9eec2d8b3f9f0218a4.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'课件创建校园教学分享会',vip:true},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796648767/7b29862ae0d6fd7f3de26256951e233a.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'项目方案策划学习',vip:false},
+  {img:'https://docer-ks3.wpscdn.cn/meihua_theme_mb_zt/69796650484/adb233772d1bc952b8b1d8a871317560.png@base@tag=imgScale&w=792&h=444&F=webp&c=0&m=0&q=100',name:'校园经典知识分享会',vip:true},
+];
+
+var vipSvg = '<svg class="vip-badge-svg" width="40" height="24" viewBox="0 0 40 24" fill="none"><path d="M0 0H32C36.42 0 40 3.58 40 8V23.33H8C3.58 23.33 0 19.75 0 15.33V0Z" fill="url(#vg)"/><path d="M12 12.58L14.42 6.49h2.89l-4.44 10.36h-2.59L8 6.49h2.62l1.43 6.09zM20.02 16.85h-2.91l1.83-10.36h2.91l-1.83 10.36zM27.07 6.49c.43 0 2.42 0 2.92.1 1.07.26 2.62 1.72 1.78 4.14-1.08 3.1-3.91 2.87-5.95 2.87l-.68 3.25h-2.74l1.86-10.36h2.82zm-.96 4.85h1.96c.7 0 1.3-.5 1.42-1.18l.03-.18c.13-.71-.42-1.36-1.13-1.36h-1.81l-.47 2.72z" fill="url(#vt)"/><defs><linearGradient id="vg" x1="0" y1=".83" x2="40" y2="23.33" gradientUnits="userSpaceOnUse"><stop stop-color="#EFDAFF"/><stop offset=".6" stop-color="#E0C6FF"/><stop offset="1" stop-color="#DFC0FF"/></linearGradient><linearGradient id="vt" x1="31.52" y1="17.43" x2="12.57" y2="-.07" gradientUnits="userSpaceOnUse"><stop offset=".01" stop-color="#5937F8"/><stop offset="1" stop-color="#BB29EE"/></linearGradient></defs></svg>';
+
+function renderTemplates() {
+  var grid = document.getElementById('templateGrid');
+  var bannerHTML = grid.querySelector('.banner-card').outerHTML;
+  grid.innerHTML = bannerHTML;
+  templates.forEach(function(t) {
+    var card = document.createElement('div');
+    card.className = 'template-card';
+    card.innerHTML =
+      (t.vip ? '<div class="vip-badge">' + vipSvg + '</div>' : '') +
+      '<img class="card-img" src="' + t.img + '" alt="' + t.name + '" loading="lazy">' +
+      '<div class="card-overlay"><button class="card-overlay-btn">选择模板</button></div>' +
+      '<div class="card-name">' + t.name + '</div>';
+    grid.appendChild(card);
+  });
+}
+renderTemplates();
+
+// ========== Tab Switching ==========
+var slogans = {
+  topic: '与 <span class="ai-text">AI 边聊边改</span>，轻松创作 PPT',
+  upload: '与 <span class="ai-text">AI 边聊边改</span>，轻松创作 PPT',
+  outline: '与 <span class="ai-text">AI 边聊边改</span>，轻松创作 PPT',
+  beautify: '用 <span class="ai-text">AI 深度美化</span>，创作精美 PPT'
+};
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-tab') === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(function(c) {
+    c.classList.toggle('active', c.id === 'content-' + name);
+  });
+  document.getElementById('slogan').innerHTML = slogans[name];
+  document.getElementById('templateSection').style.display = name === 'beautify' ? '' : 'none';
+}
+
+// ========== File Upload ==========
+var uploadArea = document.getElementById('uploadArea');
+var uploadEmpty = document.getElementById('uploadEmpty');
+var uploadFile = document.getElementById('uploadFile');
+var fileInput = document.getElementById('fileInput');
+var fileName = document.getElementById('fileName');
+var fileDelete = document.getElementById('fileDelete');
+var generateBtn = document.getElementById('generateBtn');
+
+fileInput.addEventListener('change', function() {
+  if (this.files && this.files.length > 0) showFile(this.files[0].name);
+});
+
+fileDelete.addEventListener('click', function() {
+  clearFile();
+});
+
+function showFile(name) {
+  fileName.textContent = name;
+  uploadEmpty.style.display = 'none';
+  uploadFile.classList.add('visible');
+  generateBtn.disabled = false;
+}
+
+function clearFile() {
+  fileInput.value = '';
+  uploadEmpty.style.display = '';
+  uploadFile.classList.remove('visible');
+  generateBtn.disabled = true;
+}
+
+// drag and drop
+uploadArea.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  uploadArea.classList.add('drag-over');
+});
+uploadArea.addEventListener('dragleave', function() {
+  uploadArea.classList.remove('drag-over');
+});
+uploadArea.addEventListener('drop', function(e) {
+  e.preventDefault();
+  uploadArea.classList.remove('drag-over');
+  var files = e.dataTransfer.files;
+  if (files && files.length > 0) {
+    var f = files[0];
+    var ext = f.name.split('.').pop().toLowerCase();
+    if (['ppt','pptx','pps','ppsx','pot','potx'].indexOf(ext) !== -1) {
+      showFile(f.name);
+    } else {
+      alert('请上传PPT格式文件（.ppt, .pptx等）');
+    }
+  }
+});
+
+// ========== Dropdowns ==========
+function toggleDropdown(id) {
+  var wrap = document.getElementById(id);
+  var panel = wrap.querySelector('.dropdown-panel');
+  var trigger = wrap.querySelector('.dropdown-trigger');
+  var isOpen = panel.classList.contains('show');
+
+  closeAllDropdowns();
+
+  if (!isOpen) {
+    panel.classList.add('show');
+    trigger.classList.add('open');
+  }
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown-panel').forEach(function(p) { p.classList.remove('show'); });
+  document.querySelectorAll('.dropdown-trigger').forEach(function(t) { t.classList.remove('open'); });
+}
+
+function selectOption(dropdownId, value, label) {
+  var wrap = document.getElementById(dropdownId);
+  wrap.querySelectorAll('.dropdown-option').forEach(function(opt) {
+    opt.classList.toggle('selected', opt.getAttribute('data-value') === value);
+  });
+  wrap.querySelector('.trigger-text').textContent = label;
+  closeAllDropdowns();
+
+  if (dropdownId === 'layoutDropdown') {
+    document.getElementById('templateNotice').textContent = label;
+  }
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.dropdown-wrap')) closeAllDropdowns();
+});
+
+// ========== Beautify BG Toggle ==========
+function toggleBg() {
+  var btn = document.getElementById('bgToggle');
+  btn.classList.toggle('active');
+}
+
+// ========== Slide Data for Outline Page ==========
+var ASSET_DIR = '素材/';
+var slidesData = [
+  {
+    idx: 1, type: '封面页',
+    original: ASSET_DIR + '原图1.png',
+    bg: ASSET_DIR + '背景图1.png',
+    result: ASSET_DIR + '结果图1.png',
+    resultNoBg: ASSET_DIR + '结果图1无背景.png',
+    title: '小米SU7：C级高性能生态科技轿车',
+    subtitle: '小米汽车首款力作|极致性能·生态科技·商务旗舰',
+    content: ['汇报人:胡兆岩', '2026年03月03日'],
+    hasLogo: true,
+    contentImg: null
+  },
+  {
+    idx: 2, type: '目录页',
+    original: ASSET_DIR + '原图2.png',
+    bg: ASSET_DIR + '背景图2.png',
+    result: ASSET_DIR + '结果图2.png',
+    resultNoBg: ASSET_DIR + '结果图2无背景.png',
+    title: '目录',
+    subtitle: 'CONTENTS',
+    content: [
+      '01 性能标杆与高效补能 Chapter 01',
+      '02 智能生态与驾驶辅助 Chapter 02',
+      '03 设计美学与安全架构 Chapter 03',
+      '04 市场格局与未来展望 Chapter 04'
+    ],
+    hasLogo: true,
+    contentImg: null
+  },
+  {
+    idx: 3, type: '章节页',
+    original: ASSET_DIR + '原图3.png',
+    bg: ASSET_DIR + '背景图3.png',
+    result: ASSET_DIR + '结果图3.png',
+    resultNoBg: ASSET_DIR + '结果图3无背景.png',
+    title: '01 性能标杆与高效补能',
+    subtitle: null,
+    content: [],
+    hasLogo: true,
+    contentImg: null
+  },
+  {
+    idx: 4, type: '正文页',
+    original: ASSET_DIR + '原图4.png',
+    bg: ASSET_DIR + '背景图4和5.png',
+    result: ASSET_DIR + '结果图4.png',
+    resultNoBg: ASSET_DIR + '结果图4无背景.png',
+    title: '800V高压快充技术',
+    subtitle: '从"能用"到"好用"的跨越式体验升级，全场景高效补能解决方案',
+    content: [
+      '峰值充电功率 210 kW 国网超充桩实测数据',
+      '15分钟补能续航 510 km Max版高效补能表现',
+      '10%-80% 充电耗时 23 min 含电池预热功能优化'
+    ],
+    hasLogo: true,
+    contentImg: { src: ASSET_DIR + 'car_photo.png', label: '内容图' }
+  },
+  {
+    idx: 5, type: '正文页',
+    original: ASSET_DIR + '原图5.png',
+    bg: ASSET_DIR + '背景图4和5.png',
+    result: ASSET_DIR + '结果图5.png',
+    resultNoBg: ASSET_DIR + '结果图5无背景.png',
+    title: '极致性能:动力与加速',
+    subtitle: 'SU7全系动力参数解析与HyperEngine 电机技术',
+    content: [
+      { heading: '全系动力参数 从日常出行到赛道竞技', children: [
+        '标准版:299马力，0-100km/h加速5.28秒，满足日常高效出行。',
+        'Max版:673马力，加速仅2.78秒，最高时速265km/h，媲美超跑。',
+        'Ultra版:巅峰性能1548马力，加速1.98秒，挑战物理极限。'
+      ]},
+      { heading: 'HyperEngine 自研电机 突破行业转速天花板', children: [
+        '超高转速:V6/V6s电机最高转速达21,000rpm，行业领先水平。',
+        '极致效率:采用双向全油冷散热技术，散热效率显著提升。',
+        '技术闭环:完全自研自产，掌握核心三电技术，保障持续迭代。'
+      ]},
+      { heading: '各版本最大马力对比(PS)', children: [
+        '标准版 Max版 Ultra版',
+        '核心洞察：小米SU7通过阶梯式的动力配置覆盖了从家用舒适到极致赛道的全场景需求。特别是Ultra版接近1550匹的马力与1.98秒的零百加速，配合21,000rpm的高转电机，标志着小米在高性能纯电领域的硬核技术实力。'
+      ]}
+    ],
+    hasLogo: true,
+    contentImg: { src: ASSET_DIR + 'chart_photo.png', label: '图表' }
+  },
+  {
+    idx: 6, type: '结束页',
+    original: ASSET_DIR + '原图6.png',
+    bg: ASSET_DIR + '背景图6.png',
+    result: ASSET_DIR + '结果图6.png',
+    resultNoBg: ASSET_DIR + '结果图6无背景.png',
+    title: '谢谢观看',
+    subtitle: '汇报人：胡兆岩',
+    content: [],
+    hasLogo: true,
+    contentImg: null
+  }
+];
+
+// ========== Background Toggle State ==========
+function isBgEnabled() {
+  return document.getElementById('bgToggle').classList.contains('active');
+}
+
+function getResultSrc(s) {
+  return isBgEnabled() ? s.result : s.resultNoBg;
+}
+
+// ========== Render Outline Page ==========
+function buildContentHtml(contentArr) {
+  if (!contentArr || contentArr.length === 0) return '';
+  var html = '<div class="slide-field"><b>内容：</b><ul class="outline-list">';
+  contentArr.forEach(function(item) {
+    if (typeof item === 'string') {
+      html += '<li contenteditable="true" draggable="true">' + item + '</li>';
+    } else if (item.heading) {
+      html += '<li class="content-group-head" contenteditable="true" draggable="true">' + item.heading;
+      if (item.children && item.children.length > 0) {
+        html += '<ul class="outline-list">';
+        item.children.forEach(function(ch) {
+          html += '<li contenteditable="true" draggable="true">' + ch + '</li>';
+        });
+        html += '</ul>';
+      }
+      html += '</li>';
+    }
+  });
+  html += '</ul></div>';
+  return html;
+}
+
+function buildTplOverlay(slide) {
+  var t = slide.type;
+  if (t === '封面页') {
+    return '<div class="tpl-overlay-cover">' +
+      '<div class="tpl-title">添加文档标题</div>' +
+      '<div class="tpl-subtitle">添加文档副标题</div>' +
+    '</div>';
+  } else if (t === '目录页') {
+    return '<div class="tpl-overlay-toc">' +
+      '<div class="toc-left">目录</div>' +
+      '<div class="toc-right">' +
+        '<div class="toc-item"><span class="toc-num">01</span><span class="toc-text">目录内容</span></div>' +
+        '<div class="toc-item"><span class="toc-num">02</span><span class="toc-text">目录内容</span></div>' +
+        '<div class="toc-item"><span class="toc-num">03</span><span class="toc-text">目录内容</span></div>' +
+        '<div class="toc-item"><span class="toc-num">04</span><span class="toc-text">目录内容</span></div>' +
+      '</div>' +
+    '</div>';
+  } else if (t === '章节页') {
+    var numMatch = slide.title ? slide.title.match(/^(\d+)/) : null;
+    var chapNum = numMatch ? numMatch[1] : '01';
+    return '<div class="tpl-overlay-chapter">' +
+      '<div class="tpl-chap-num">' + chapNum + '</div>' +
+      '<div class="tpl-chap-label">章节内容</div>' +
+    '</div>';
+  } else if (t === '正文页') {
+    return '<div class="tpl-overlay-content">' +
+      '<div class="tpl-title">页面标题</div>' +
+      '<div class="tpl-subtitle">页面副标题</div>' +
+    '</div>';
+  } else if (t === '结束页') {
+    return '<div class="tpl-overlay-end">' +
+      '<div class="tpl-title">谢谢观看</div>' +
+      '<div class="tpl-subtitle">副标题</div>' +
+    '</div>';
+  }
+  return '';
+}
+
+function renderOutline() {
+  var body = document.getElementById('outlineBody');
+  body.innerHTML = '';
+
+  slidesData.forEach(function(s) {
+    var extractHtml = '';
+    if (s.title) extractHtml += '<div class="slide-field"><b>标题：</b><span class="editable-val" contenteditable="true">' + s.title + '</span></div>';
+    if (s.subtitle) extractHtml += '<div class="slide-field"><b>副标题：</b><span class="editable-val" contenteditable="true">' + s.subtitle + '</span></div>';
+    extractHtml += buildContentHtml(s.content);
+
+    var assetsHtml = '';
+    if (s.hasLogo) {
+      assetsHtml += '<div class="slide-asset"><img src="' + ASSET_DIR + 'logo.png" alt="Logo"><span class="slide-asset-label">Logo图</span></div>';
+    }
+    if (s.contentImg) {
+      assetsHtml += '<div class="slide-asset"><img src="' + s.contentImg.src + '" alt="' + s.contentImg.label + '"><span class="slide-asset-label">' + s.contentImg.label + '</span></div>';
+    }
+
+    var card = document.createElement('div');
+    card.className = 'slide-card';
+    card.innerHTML =
+      '<div class="slide-card-head">' +
+        '<span class="slide-type-badge">' + s.idx + '</span>' +
+        '<span class="slide-type-name">' + s.type + '</span>' +
+      '</div>' +
+      '<div class="slide-card-body">' +
+        '<div class="slide-original">' +
+          '<img src="' + s.original + '" alt="原图 ' + s.idx + '">' +
+        '</div>' +
+        '<div class="slide-extract">' +
+          extractHtml +
+          (assetsHtml ? '<div class="slide-assets">' + assetsHtml + '</div>' : '') +
+        '</div>' +
+      '</div>';
+    body.appendChild(card);
+  });
+
+  initOutlineEditing();
+
+  // Zone 2: AI 推荐模板 — card with thumb nav + large preview
+  var bgSection = document.getElementById('bgZone');
+  var bgDivider = document.getElementById('bgDivider');
+  if (isBgEnabled()) {
+    bgSection.style.display = '';
+    bgDivider.style.display = '';
+    var thumbList = document.getElementById('tplThumbList');
+    var mainImg = document.getElementById('tplMainImg');
+    var mainOverlay = document.getElementById('tplMainOverlay');
+    thumbList.innerHTML = '';
+
+    function selectTplSlide(idx) {
+      var s = slidesData[idx];
+      mainImg.src = s.bg;
+      mainOverlay.innerHTML = buildTplOverlay(s);
+      var thumbs = thumbList.querySelectorAll('.tpl-thumb');
+      for (var i = 0; i < thumbs.length; i++) {
+        thumbs[i].classList.toggle('active', i === idx);
+      }
+    }
+
+    slidesData.forEach(function(s, i) {
+      var thumb = document.createElement('div');
+      thumb.className = 'tpl-thumb' + (i === 0 ? ' active' : '');
+      thumb.innerHTML =
+        '<img src="' + s.bg + '" alt="第' + s.idx + '页">' +
+        '<div class="tpl-thumb-label">P' + s.idx + ' ' + s.type + '</div>';
+      thumb.onclick = function() { selectTplSlide(i); };
+      thumbList.appendChild(thumb);
+    });
+
+    selectTplSlide(0);
+  } else {
+    bgSection.style.display = 'none';
+    bgDivider.style.display = 'none';
+  }
+}
+
+// ========== Page Navigation ==========
+function showPage(pageName) {
+  var mainEl = document.querySelector('.main');
+  var guideBanner = document.getElementById('guideBanner');
+  var headerEl = document.querySelector('.header');
+  var outlineEl = document.getElementById('outlinePage');
+  var resultEl = document.getElementById('resultPage');
+
+  mainEl.style.display = 'none';
+  guideBanner.style.display = 'none';
+  outlineEl.classList.remove('visible');
+  resultEl.classList.remove('visible');
+
+  if (pageName === 'home') {
+    mainEl.style.display = '';
+    headerEl.style.display = '';
+  } else if (pageName === 'outline') {
+    headerEl.style.display = '';
+    outlineEl.classList.add('visible');
+  } else if (pageName === 'result') {
+    headerEl.style.display = 'none';
+    resultEl.classList.add('visible');
+  }
+}
+
+function goToOutline() {
+  var overlay = document.getElementById('loadingOverlay');
+  var loadingText = document.getElementById('loadingText');
+  overlay.classList.add('visible');
+  loadingText.textContent = '正在解析PPT内容...';
+
+  setTimeout(function() {
+    loadingText.textContent = '正在生成大纲与推荐模板...';
+  }, 800);
+
+  setTimeout(function() {
+    overlay.classList.remove('visible');
+    renderOutline();
+    showPage('outline');
+  }, 1800);
+}
+
+function goToResult() {
+  var overlay = document.getElementById('loadingOverlay');
+  var loadingText = document.getElementById('loadingText');
+  overlay.classList.add('visible');
+  loadingText.textContent = '正在生成美化结果...';
+
+  setTimeout(function() {
+    overlay.classList.remove('visible');
+    currentSlide = 0;
+    renderThumbs();
+    updateSlide();
+    showPage('result');
+  }, 1200);
+}
+
+function goToHome() {
+  showPage('home');
+}
+
+// ========== Result Page (WPS-style) ==========
+var currentSlide = 0;
+var totalSlides = slidesData.length;
+
+function renderThumbs() {
+  var panel = document.getElementById('wpsThumbs');
+  panel.innerHTML = '';
+  slidesData.forEach(function(s, i) {
+    var thumb = document.createElement('div');
+    thumb.className = 'wps-thumb' + (i === currentSlide ? ' active' : '');
+    thumb.onclick = (function(idx) { return function() { currentSlide = idx; updateSlide(); }; })(i);
+    thumb.innerHTML =
+      '<img src="' + getResultSrc(s) + '" alt="' + s.type + '">' +
+      '<span class="wps-thumb-num">' + (i + 1) + '</span>';
+    panel.appendChild(thumb);
+  });
+}
+
+function updateSlide() {
+  var img = document.getElementById('resultImg');
+  img.src = getResultSrc(slidesData[currentSlide]);
+  img.alt = slidesData[currentSlide].type;
+
+  document.getElementById('wpsSlideCount').textContent = '幻灯片 ' + (currentSlide + 1) + '/' + totalSlides;
+
+  document.querySelectorAll('.wps-thumb').forEach(function(t, i) {
+    t.classList.toggle('active', i === currentSlide);
+  });
+
+  var activeThumb = document.querySelector('.wps-thumb.active');
+  if (activeThumb) activeThumb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function changeSlide(dir) {
+  var next = currentSlide + dir;
+  if (next < 0 || next >= totalSlides) return;
+  currentSlide = next;
+  updateSlide();
+}
+
+document.addEventListener('keydown', function(e) {
+  var resultEl = document.getElementById('resultPage');
+  if (!resultEl.classList.contains('visible')) return;
+  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+  else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); changeSlide(1); }
+  else if (e.key === 'Escape') goToHome();
+});
+
+// ========== Outline Editing: Drag & Drop + Tab Indent ==========
+var dragSrcEl = null;
+
+function initOutlineEditing() {
+  var allItems = document.querySelectorAll('.outline-list li[draggable="true"]');
+  allItems.forEach(function(li) {
+    li.addEventListener('dragstart', onDragStart);
+    li.addEventListener('dragover', onDragOver);
+    li.addEventListener('dragleave', onDragLeave);
+    li.addEventListener('drop', onDrop);
+    li.addEventListener('dragend', onDragEnd);
+    li.addEventListener('keydown', onOutlineKeydown);
+  });
+}
+
+function getDirectTextContent(el) {
+  var text = '';
+  el.childNodes.forEach(function(n) { if (n.nodeType === 3) text += n.textContent; });
+  return text.trim();
+}
+
+function onDragStart(e) {
+  dragSrcEl = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', '');
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (this === dragSrcEl) return;
+
+  clearAllDragIndicators();
+  var rect = this.getBoundingClientRect();
+  var midY = rect.top + rect.height / 2;
+  if (e.clientY < midY) {
+    this.classList.add('drag-over-top');
+  } else {
+    this.classList.add('drag-over-bottom');
+  }
+}
+
+function onDragLeave() {
+  this.classList.remove('drag-over-top', 'drag-over-bottom');
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (this === dragSrcEl) return;
+
+  var targetList = this.parentNode;
+  var srcList = dragSrcEl.parentNode;
+
+  var rect = this.getBoundingClientRect();
+  var midY = rect.top + rect.height / 2;
+
+  if (e.clientY < midY) {
+    targetList.insertBefore(dragSrcEl, this);
+  } else {
+    targetList.insertBefore(dragSrcEl, this.nextSibling);
+  }
+
+  clearAllDragIndicators();
+}
+
+function onDragEnd() {
+  this.classList.remove('dragging');
+  clearAllDragIndicators();
+}
+
+function clearAllDragIndicators() {
+  document.querySelectorAll('.drag-over-top, .drag-over-bottom').forEach(function(el) {
+    el.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+}
+
+function onOutlineKeydown(e) {
+  var li = e.target.closest('li[contenteditable]');
+  if (!li) return;
+
+  if (e.key === 'Tab' && !e.shiftKey) {
+    e.preventDefault();
+    indentItem(li);
+  } else if (e.key === 'Tab' && e.shiftKey) {
+    e.preventDefault();
+    outdentItem(li);
+  }
+}
+
+function indentItem(li) {
+  var prev = li.previousElementSibling;
+  if (!prev) return;
+
+  var childUl = prev.querySelector(':scope > ul.outline-list');
+  if (!childUl) {
+    childUl = document.createElement('ul');
+    childUl.className = 'outline-list';
+    prev.appendChild(childUl);
+  }
+  childUl.appendChild(li);
+
+  li.removeAttribute('class');
+  li.focus();
+
+  li.addEventListener('dragstart', onDragStart);
+  li.addEventListener('dragover', onDragOver);
+  li.addEventListener('dragleave', onDragLeave);
+  li.addEventListener('drop', onDrop);
+  li.addEventListener('dragend', onDragEnd);
+  li.addEventListener('keydown', onOutlineKeydown);
+
+  if (!prev.classList.contains('content-group-head')) {
+    prev.classList.add('content-group-head');
+  }
+}
+
+function outdentItem(li) {
+  var parentUl = li.parentNode;
+  if (!parentUl || !parentUl.classList.contains('outline-list')) return;
+  var parentLi = parentUl.parentNode;
+  if (!parentLi || parentLi.tagName !== 'LI') return;
+
+  var grandUl = parentLi.parentNode;
+  grandUl.insertBefore(li, parentLi.nextSibling);
+  li.focus();
+
+  if (parentUl.children.length === 0) {
+    parentUl.remove();
+    if (parentLi.classList.contains('content-group-head') && !parentLi.querySelector('ul')) {
+      parentLi.classList.remove('content-group-head');
+    }
+  }
+}
+
+// ========== Wire up Generate Button ==========
+generateBtn.addEventListener('click', function() {
+  if (!this.disabled) goToOutline();
+});
+</script>
+</body>
+</html>
